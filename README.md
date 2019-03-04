@@ -54,7 +54,7 @@ for (unsigned int pIdx = 0; pIdx < stbiCount; pIdx += stbiNoChannels) {
     }
 }
 
-// feed to gpu (preferably float)
+// feed to gpu (preferably float if you have OES_texture_float extension available)
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, stbiWidth, stbiHeight, 0, format, GL_FLOAT, stbiDataF.data());
 
 // but you can still use unsigned bytes
