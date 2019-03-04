@@ -5,7 +5,7 @@ function normalize(t, min, max) {
 }
 
 function unsignedbitefy(t) {
-  return t * 255;
+  return Math.round(t * 255);
 }
 
 // converts a [0.0, 1.0] sRGB value into a [0.0, 1.0] linear value that can be used more efectively in shader
@@ -32,28 +32,59 @@ function linearToSrgbStandard(linear) {
 }
 
 function generate() {
+    // change srgbToLinearSimple to whatever as needed
+  const methodChosen = srgbToLinearSimple;
+  const gamma = 2.2;
+  
   console.log('// Using method srgbToLinearSimple with gamma 2.2');
-  // rename array as needed
-  process.stdout.write('unsigned char lut_srgb_to_linear[256] = {');
+  console.log('');
+
+  const arr8 = [];
+  const arrFloat = [];
+
+  for (let pVal = 0; pVal < 256; pVal++) {
+    const resultFloat = methodChosen(normalize(pVal, 0, 255), gamma);
+    arrFloat.push(resultFloat);
+    const result8 = unsignedbitefy(resultFloat)
+    arr8.push(result8);
+  }
+
+  // float array
+  process.stdout.write('float lut_srgb_to_linear_f[256] = {');
   console.log('');
   for (let pVal = 0; pVal < 256; pVal++) {
-    let result = unsignedbitefy(
-      // change srgbToLinearSimple to whatever as needed
-      srgbToLinearSimple(normalize(pVal, 0, 255), 2.2)
-    );
-    result = Math.round(result);
-    result = result.toString();
+    let str = Number.parseFloat(arrFloat[pVal]).toFixed(10).toString();
+    str += 'f';
     if (pVal < 256 - 1) {
-      result += ',';
+      str += ',';
     }
-    result = result.padEnd(5, ' ')
-    process.stdout.write(result);
+    str = str.padEnd(15, ' ')
+    process.stdout.write(str);
     if ((pVal + 1) % 16 === 0) {
       console.log('');
     }
   }
   process.stdout.write('};');
   console.log('');
+  console.log('');
+
+  // 8bit array
+  process.stdout.write('unsigned char lut_srgb_to_linear_8[256] = {');
+  console.log('');
+  for (let pVal = 0; pVal < 256; pVal++) {
+    let str = arr8[pVal].toString();
+    if (pVal < 256 - 1) {
+      str += ',';
+    }
+    str = str.padEnd(5, ' ')
+    process.stdout.write(str);
+    if ((pVal + 1) % 16 === 0) {
+      console.log('');
+    }
+  }
+  process.stdout.write('};');
+  console.log('');
+
   console.log('// end');
 }
 
