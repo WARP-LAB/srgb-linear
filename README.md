@@ -61,6 +61,9 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, stbiWidth, stbiHeight, 0, format, GL_F
 // just note the precission loss in space conversation (see first 15 bytes of lut_srgb_to_linear_8)
 // glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, stbiWidth, stbiHeight, 0, format, GL_UNSIGNED_BYTE, stbiData);
 
+stbi_image_free(stbiData);
+stbiDataF.clear();
+
 ```
 
 For floating point textures do conversation on the fly.
