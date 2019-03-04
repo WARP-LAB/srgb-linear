@@ -6,6 +6,7 @@ When
 
 * you want to receive data in linear colour space in your texture lookups (as you should ^_^)
 * but you can't because your crappy SBC GLES on EGL implementation does not have `GL_SRGB` internal format
+* your texture is not floating point
 * and you want to avoid converting sRGB to linear colour space in shader for every fragment
 
 then apply LUT to image data before giving it to `glTexImage2D` while still keeping internal format specified as `GL_RGB(A)`.
@@ -79,5 +80,6 @@ for (unsigned int pIdx = 0; pIdx < stbiCount; pIdx += stbiNoChannels) {
 glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, stbiWidth, stbiHeight, 0, format, GL_UNSIGNED_BYTE, stbiData);
 ```
 
+For floating point textures do conversation on the fly.
 
 Profit.
