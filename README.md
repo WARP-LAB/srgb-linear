@@ -44,19 +44,21 @@ if (stbiData == nullptr) {
 GLint internalFormat = GL_RGB;
 GLenum format = GL_RGB;
 
+// populate mapped float array, edit raw image data, convert from sRGB to linear
 std::vector<float> stbiDataF;
-
-// edit raw image data, convert from sRGB to linear
 unsigned int stbiCount = stbiWidth * stbiHeight * stbiNoChannels;
 for (unsigned int pIdx = 0; pIdx < stbiCount; pIdx += stbiNoChannels) {
     for (unsigned int cIdx = pIdx; (cIdx < pIdx + stbiNoChannels && cIdx < pIdx + 3); cIdx++) {
         stbiDataF.push_back(lut_srgb_to_linear_f[stbiData[cIdx]]);
-        stbiData[cIdx] = lut_srgb_to_linear[stbiData[cIdx]];
+        stbiData[cIdx] = lut_srgb_to_linear_8[stbiData[cIdx]];
     }
 }
 
-// feed in (preferably float)
+// feed to gpu (preferably float)
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, stbiWidth, stbiHeight, 0, format, GL_FLOAT, stbiDataF.data());
+
+// but you can still use unsigned bytes
+// just note the precission loss in space conversation (see first 15 bytes of lut_srgb_to_linear_8)
 // glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, stbiWidth, stbiHeight, 0, format, GL_UNSIGNED_BYTE, stbiData);
 
 ```
