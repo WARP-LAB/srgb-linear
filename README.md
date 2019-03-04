@@ -8,7 +8,7 @@ When
 * but you can't because your crappy SBC GLES on EGL implementation does not have `GL_SRGB` internal format
 * and you want to avoid converting sRGB to linear colour space in shader for every fragment
 
-then apply LUT to image data before giving it to `glTexImage2D` while still keeping internal format specified as `GL_SRGB(A)`.
+then apply LUT to image data before giving it to `glTexImage2D` while still keeping internal format specified as `GL_RGB(A)`.
 
 Or vice versa.
 
